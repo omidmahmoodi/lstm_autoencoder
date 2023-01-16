@@ -46,7 +46,6 @@ test_df['Passenger_scaled']= sc.transform(test_df[['Passenger']])
 # MAGIC %md
 # MAGIC ### Input data preparation for LSTM
 # MAGIC Input to LSTMs are 3-dimensional arrays with a shape of samples (number of sequences) x timesteps (window size) x features (number of features in the input data)
-# MAGIC ![image.png](attachment:image.png)
 
 # COMMAND ----------
 
@@ -80,16 +79,19 @@ from keras.layers import LSTM, Dense, Dropout, RepeatVector, TimeDistributed
 
 # build lstm-autoencoder
 keras.backend.clear_session()
+
 lstm_autoencoder = Sequential()
+
 # Encoder - layer1: 64 lstm cells -- Layer2: 32 lstm cells
-lstm_autoencoder.add(LSTM(64, activation='relu', input_shape=(12, 1), return_sequences=True))
+lstm_autoencoder.add(LSTM(64, input_shape=(12, 1), return_sequences=True))
 #lstm_autoencoder.add(Dropout(0.4))
-lstm_autoencoder.add(LSTM(32, activation='relu', return_sequences=False))
+lstm_autoencoder.add(LSTM(32, return_sequences=False))
 lstm_autoencoder.add(RepeatVector(12))
+
 # Decoder - - layer1: 32 lstm cells -- Layer2: 64 lstm cells
-lstm_autoencoder.add(LSTM(32, activation='relu', return_sequences=True))
+lstm_autoencoder.add(LSTM(32, return_sequences=True))
 #lstm_autoencoder.add(Dropout(0.4))
-lstm_autoencoder.add(LSTM(64, activation='relu', return_sequences=True))
+lstm_autoencoder.add(LSTM(64, return_sequences=True))
 lstm_autoencoder.add(TimeDistributed(Dense(1)))
 
 # COMMAND ----------
